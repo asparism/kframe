@@ -1,0 +1,203 @@
+AFRAME.registerComponent('teleport-pillar', {
+        init: function() {
+          
+          var 
+            camera = document.getElementById('camera'),
+            pillar = document.getElementById('pillar'),
+            arrow = document.getElementById('arrow'),
+            teleport = document.getElementById('teleportPillar'),
+            cameraOrientation = {x:0, y:0, z:0};
+       
+                
+            function setWASDControls() {
+              
+              var camY = parseInt(cameraOrientation.y);
+              
+              cl(camY);
+
+                switch(camY) {
+                    
+                  case 0 : case 360 :
+                    resetWASD('z', false, false);
+                    break; 
+
+                  case 90 : 
+                    resetWASD('x', false, true);
+                    break;
+                    
+                  case 180:
+                    resetWASD('z', true, false);
+                    break; 
+                    
+                  case 270:
+                    resetWASD('x', true, false);
+                    break;
+                    
+                  default: break;
+                                       }
+              
+                  function resetWASD(upDown, wsInverted, adInverted) {
+                    // pass the axis of the up/down keys and whether or not ws and ad axes are inverted
+                    // changes the arrow keys orientation
+                    
+                   // cl(teleport.getAttribute('wasd-controls'));
+
+                    var leftRight = 'z';
+                    if (upDown === 'z') {
+                      leftRight = 'x';
+                    }
+
+
+                    teleport.setAttribute('wasd-controls', 'wsAxis: z; adAxis: x;');
+                    pillar.setAttribute('color', 'blue');
+                    /*
+                    teleport.setAttribute('wasd-controls', 'adAxis', 'x');
+                    teleport.setAttribute('wasd-controls', 'wsInverted', false);
+                    teleport.setAttribute('wasd-controls', 'adInverted', false);
+                    
+                    */
+                  }
+            
+              
+
+                
+              }
+            
+            // init just once, not every keydown
+            setWASDControls();
+          
+          
+          var el = this.el;
+          document.body.addEventListener('keydown', function(evt) {
+            
+            
+            // cl(evt.which);
+      
+            
+            // if spacebar
+            if (evt.which === 32) {
+
+              
+              // set new position and rotation for camera
+              let newCamPosition = Object.assign({}, teleport.getAttribute('position'));
+              // lift the camera up
+              newCamPosition.y = 3;
+              cameraOrientation = Object.assign({}, arrow.getAttribute('rotation'));
+
+              // set x to 0 because 'arrow' is a cone that already has an x rotation of -90
+              cameraOrientation.x = 0;
+              camera.setAttribute('position', newCamPosition);
+              //newCamRotation.y + 180 < 360 ? newCamRotation.y += 180 : newCamRotation.y -=180;
+              camera.setAttribute('rotation', cameraOrientation);
+              /************************************************/
+
+              
+              setWASDControls(arrow.getAttribute('rotation').y);
+
+              
+              
+              let newTPosition = teleport.getAttribute('position');
+   
+              
+              function repositTS(dim, movement) {
+                var telesphereSpace = 6;
+                if (movement === 'add') {
+                  newTPosition[dim] += telesphereSpace*2;
+                } else if (movement === 'sub') {
+                  newTPosition[dim] -= telesphereSpace;
+                }
+              }
+              
+            
+              
+              /* DOES THIS NEED OT BE HERE?*/
+              if (newTPosition.x === 0 ){
+                newTPosition.x = 1;
+              } else if (newTPosition.z === 0 ){
+                newTPosition.z = 1;
+              }
+              
+              let ts = 10;
+              
+             
+
+              
+               //  DOESNT WORK BECAUSE RESET WASD IS BASED ON ARROW ROTATION NOT CAEMRA ROTATION
+
+                                
+              //cl('new');
+              //cl(newTPosition);
+              teleport.setAttribute('position', newTPosition);
+              
+              }
+            
+            
+            
+            /* Rotation Keys */
+            
+            if (evt.which === 81) {
+              // 'q' key
+              let rotation = arrow.getAttribute('rotation');
+              // set x to 0 because 'arrow' is a cone that already has an x rotation of -90
+              rotation.x = 0;
+              
+              rotation.y + 90 < 360 ? rotation.y += 90 : rotation.y -= 270;
+              cl('---------');
+              cl('befor');
+              setWASDControls();
+              cl('--');
+              teleport.setAttribute('rotation', rotation);
+             
+              setWASDControls();
+              cl('after');
+            }
+            
+            if (evt.which === 69) {
+              // 'e' key
+              let rotation = arrow.getAttribute('rotation');
+              // set x to 0 because 'arrow' is a cone that already has an x rotation of -90
+              rotation.x = 0;
+              rotation.y - 90 < 0 ? rotation.y += 270 : rotation.y -= 90;
+              setWASDControls();
+              teleport.setAttribute('rotation', rotation);
+              setWASDControls();
+            }
+            
+            /* wasd-custm keys */
+            if (evt.which === 87) {
+              
+              let oldTSPosition = pillar.getAttribute('position');
+              let cameraPosition = camera.getAttribute('position');
+
+              /*
+              let handleRotation = handle.getAttribute('rotation');
+              if (handleRotation % 180 === 0) {
+                teleport.setAttribute('wasd-controls', 'wsAxis', 'x');
+                teleport.setAttribute('wasd-controls', 'adAxis', 'z');
+              } else {
+                teleportteleport.setAttribute('wasd-controls', 'wsAxis', 'z');
+                teleport.setAttribute('wasd-controls', 'adAxis', 'x');
+              }
+              */
+              
+            }
+            if (evt.which === 65) {
+             //cl('a');
+            }
+            if (evt.which === 83) {
+            //cl('s');
+            }
+            if (evt.which === 68) {
+             //cl('d');
+            }
+ /*           
+90
+86
+78
+190
+*/
+         });   
+          
+          
+        },
+      });
